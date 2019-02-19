@@ -48,7 +48,6 @@ public class EventControllerTest {
     public void createEvent() throws  Exception{
         Event event = Event.builder()
                 .name("Spring")
-                .id(100)
                 .description("Rest APi")
                 .beginEnrollmentDateTime(LocalDateTime.of(2018,11,20,11,00))
                 .closeEnrollmentDateTime(LocalDateTime.of(2018,11,21,11,00))
@@ -58,7 +57,6 @@ public class EventControllerTest {
                 .maxPrice(200)
                 .limitOfEnrollment(100)
                 .location("강남역")
-                .eventStatus(EventStatus.PUBLISHED)
                 .build();
 
         // Mockito.when(eventRepository.save(event)).thenReturn(event);
@@ -79,6 +77,39 @@ public class EventControllerTest {
                 .andExpect(jsonPath("offline").value((Matchers.not(true))))
         .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()))
                 ;
+    }
+
+
+
+    @Test
+    public void createEvent_Bad_Request() throws  Exception{
+        Event event = Event.builder()
+                .name("Spring")
+                .id(100)
+                .description("Rest APi")
+                .beginEnrollmentDateTime(LocalDateTime.of(2018,11,20,11,00))
+                .closeEnrollmentDateTime(LocalDateTime.of(2018,11,21,11,00))
+                .beginEventDateTime(LocalDateTime.of(2018,11,21,11,00))
+                .endEventDateTime(LocalDateTime.of(2018,11,21,11,00))
+                .basePrice(100)
+                .maxPrice(200)
+                .limitOfEnrollment(100)
+                .location("강남역")
+                .eventStatus(EventStatus.PUBLISHED)
+                .build();
+
+        // Mockito.when(eventRepository.save(event)).thenReturn(event);
+
+        mockMvc.perform(post("/api/events")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(event))
+        )
+                //.andExpect(status().is("201"))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+
+        ;
     }
 
 
