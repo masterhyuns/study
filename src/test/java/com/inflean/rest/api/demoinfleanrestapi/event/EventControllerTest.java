@@ -44,6 +44,7 @@ public class EventControllerTest {
     @MockBean
     EventRepository eventRepository;*/
 
+
     @Test
     public void createEvent() throws  Exception{
         Event event = Event.builder()
@@ -100,20 +101,53 @@ public class EventControllerTest {
 
         // Mockito.when(eventRepository.save(event)).thenReturn(event);
 
-        mockMvc.perform(post("/api/events")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(event))
-        )
-                //.andExpect(status().is("201"))
+                mockMvc.perform(post("/api/events")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaTypes.HAL_JSON)
+                        .content(objectMapper.writeValueAsString(event))
+                )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
 
         ;
     }
 
+    @Test
+    public void createEvent_Bad_Request_Empty_Input() throws Exception {
+        EventDto eventDto = EventDto.builder().build();
 
+        this.mockMvc.perform(post("/api/events")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(eventDto))
+                )
+                .andExpect(status().isBadRequest())
+                ;
+    }
 
+    @Test
+    public void createEvent_Bad_Request_Empty_Wrong_Input() throws Exception {
+        EventDto eventDto = EventDto.builder()
+                .name("Spring")
+                .description("Rest APi")
+                .beginEnrollmentDateTime(LocalDateTime.of(2018,11,26,11,00))
+                .closeEnrollmentDateTime(LocalDateTime.of(2018,11,25,11,00))
+                .beginEventDateTime(LocalDateTime.of(2018,11,24,11,00))
+                .endEventDateTime(LocalDateTime.of(2018,11,23,11,00))
+                .basePrice(10000)
+                .maxPrice(200)
+                .limitOfEnrollment(100)
+                .location("강남역")
+                .build();
+
+        this.mockMvc.perform(post("/api/events")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(eventDto))
+        )
+                .andExpect(status().isBadRequest())
+        ;
+    }
 
 
 
