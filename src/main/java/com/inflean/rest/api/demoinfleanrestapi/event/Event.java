@@ -2,6 +2,7 @@ package com.inflean.rest.api.demoinfleanrestapi.event;
 
 import lombok.*;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
@@ -12,7 +13,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter @EqualsAndHashCode(of ="id")
+@Entity
 public class Event {
+    @Id @GeneratedValue
     private Integer id;
     private String name;
     private String description;
@@ -26,5 +29,6 @@ public class Event {
     private int limitOfEnrollment;
     private boolean offline;
     private boolean free;
+    @Enumerated(EnumType.STRING) // ORDINAL : 순서에 따라 index로 저장
     private EventStatus eventStatus;
 }
