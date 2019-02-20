@@ -31,4 +31,20 @@ public class Event {
     private boolean free;
     @Enumerated(EnumType.STRING) // ORDINAL : 순서에 따라 index로 저장
     private EventStatus eventStatus = EventStatus.DRAFT;
+
+
+    public void update() {
+        // updateFree
+        if(this.basePrice == 0 && this.maxPrice == 0){
+            this.free = true;
+        }else{
+            this.free = false;
+        }
+
+        if(this.location == null || this.location.trim().isEmpty()){
+            this.offline = false;
+        }else{
+            this.offline = true;
+        }
+    }
 }
